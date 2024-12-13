@@ -13,6 +13,8 @@ sounddevice = "^0.5.1"
 numpy = "^2.2.0"
 scipy = "^1.14.1"
 pyaudio = "^0.2.14"
+poetry = "^1.8.5"
+setuptools = "^75.6.0"
 
 
 [build-system]

@@ -2,7 +2,6 @@ import os
 import queue
 import threading
 from pathlib import Path
-import speech_recognition as sr
 import sounddevice as sd
 import numpy as np
 from scipy.io.wavfile import write
@@ -13,11 +12,9 @@ class AudioRecorder:
         self.result_path = os.path.join(self.root_dir, 'result')
         self.sample_rate = sample_rate
         self.channels = channels
-        self.sr_recognizer = sr.Recognizer()
         self.record_thread = threading.Thread(target=self.__record_audio, daemon=True)
         self.is_recording = False
         self.audio_queue = queue.Queue()
-        # self.record_thread = None
 
     def start_recording(self):
         """
@@ -34,7 +31,7 @@ class AudioRecorder:
         """
         Continuous audio recording method
         """
-   
+
         while self.is_recording:
             # record for a short chunk (e.g., 0.5s)
             chunk = sd.rec(
@@ -53,7 +50,7 @@ class AudioRecorder:
         if not self.is_recording:
             print("No recording in progress.")
             return None
-        
+
         self.is_recording = False
         self.record_thread.join()
 
@@ -61,12 +58,12 @@ class AudioRecorder:
         audio_chunks = []
         while not self.audio_queue.empty():
             audio_chunks.append(self.audio_queue.get())
-        
+
         # # Concatenate the chunks
         audio_chunks = np.concatenate(audio_chunks)
         print("Recording stopped.")
         return audio_chunks
-    
+
     def save_audio(self, audio_chunks, filename='output.wav'):
         """
         Save recorded audio to a WAV file
