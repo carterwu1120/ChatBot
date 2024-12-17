@@ -7,9 +7,12 @@ import numpy as np
 from scipy.io.wavfile import write
 
 class AudioRecorder:
+    """
+    class of Audio Recorder
+    """
     def __init__(self, sample_rate=44100, channels=1):
         self.root_dir = Path(__file__).parent.parent
-        self.result_path = os.path.join(self.root_dir, 'result')
+        self.result_path = os.path.join(self.root_dir, 'audio')
         self.sample_rate = sample_rate
         self.channels = channels
         self.record_thread = threading.Thread(target=self.__record_audio, daemon=True)
@@ -26,7 +29,6 @@ class AudioRecorder:
         self.record_thread.start()
         print("Recording started. Use stop_recording() to end.")
 
-
     def __record_audio(self):
         """
         Continuous audio recording method
@@ -35,7 +37,7 @@ class AudioRecorder:
         while self.is_recording:
             # record for a short chunk (e.g., 0.5s)
             chunk = sd.rec(
-                int(0.5*self.sample_rate),
+                int(3*self.sample_rate),
                 samplerate=self.sample_rate,
                 channels=self.channels,
                 dtype='float64'
@@ -64,7 +66,7 @@ class AudioRecorder:
         print("Recording stopped.")
         return audio_chunks
 
-    def save_audio(self, audio_chunks, filename='output.wav'):
+    def save_audio(self, audio_chunks, filename='audio.wav'):
         """
         Save recorded audio to a WAV file
         """
