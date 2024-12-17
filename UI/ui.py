@@ -2,13 +2,16 @@ import os
 from pathlib import Path
 import gradio as gr
 from package.audio_recorder import AudioRecorder
-from package.audio_to_text import AutioToText
+from package.audio_to_text import AudioToText
 
 class UI:
+    """
+    class of UI
+    """
     def __init__(self):
         self.root_dir = Path(__file__).parent.parent
         self.audio_recorder = AudioRecorder()
-        self.audio_to_text = AutioToText()
+        self.audio_to_text = AudioToText()
 
     def __start_record(self):
         gr.Info('Recording has started')
@@ -18,10 +21,10 @@ class UI:
         gr.Info('Recording has stopped')
         audio_chunks = self.audio_recorder.stop_recording()
         self.audio_recorder.save_audio(audio_chunks=audio_chunks)
-        texts = self.audio_to_text.autio_to_text(audio_chunks=audio_chunks)
+        texts = self.audio_to_text.whisper_audtio_to_text()
         print(texts)
 
-        return gr.update(value = os.path.join(self.root_dir, 'result', 'output.wav'))
+        return [gr.update(value = os.path.join(self.root_dir, 'result', 'output.wav')), gr.update(value = texts)]
 
     def create_interface(self):
         start_record_btn = gr.Button(value = "Start")
@@ -33,8 +36,12 @@ class UI:
         user_audio = gr.Audio(
             value = None
         )
+
+        user_textbox = gr.Textbox(
+            value = ""
+        )
         stop_record_btn.click(
             fn = self.__stop_record,
             inputs = None,
-            outputs = user_audio
+            outputs = [user_audio, user_textbox]
         )
