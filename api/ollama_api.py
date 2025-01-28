@@ -10,12 +10,10 @@ class OllamaApi(LlmApi):
     class of ollama api
     """
 
-    def __init__(self, model: str = "llama2:13b"):
-        self.model = model
-
+    def __init__(self):
         self.client = Client(host = self.envdata.ollama_server)
 
-    def generate_resopnse(self, input_text: str = "Hello, I worked very hard today. Could you please give me some warm feedback?"):
+    def generate_resopnse(self, input_text: str = "Hello, I worked very hard today. Could you please give me some warm feedback?", model: str = "llama2:13b"):
         """
         generate response
         """
@@ -25,7 +23,7 @@ class OllamaApi(LlmApi):
         ]
 
         response = self.client.chat(
-            model = self.model,
+            model = model,
             messages = messages
         )
 
