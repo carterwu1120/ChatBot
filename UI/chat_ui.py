@@ -4,7 +4,7 @@ import gradio as gr
 from package.audio_recorder import AudioRecorder
 from package.audio_text_processor import AudioTextProcessor
 
-class DevUI:
+class ChatUI:
     """
     class of UI for development
     """
@@ -24,17 +24,8 @@ class DevUI:
         texts = self.audio_text_processor.audio_to_text()
 
         return [gr.update(value = os.path.join(self.root_dir, 'result', 'output.wav')), gr.update(value = texts)]
-
-    def __test_result_audio(self, audio_name: str):
-        """
-        test audio which have been saved at result
-        """
-        text = self.audio_text_processor.test_audio_to_text(audio_name)
-
-        return gr.update(value = text)
  
     def create_interface(self):
-        audio_file_list = os.listdir(os.path.join(self.root_dir, "audio_user"))
 
         start_record_btn = gr.Button(value = "Start Record")
         start_record_btn.click(
@@ -42,14 +33,6 @@ class DevUI:
         )
         stop_record_btn = gr.Button(value = "Stop Record")
 
-        audio_file_dropdown = gr.Dropdown(
-            choices = audio_file_list,
-            label = "Select Audio",
-            info = "Select a audio"
-        )
-        test_btn = gr.Button(
-            value = "Test"
-        )
         with gr.Row():
             with gr.Column():
                 user_audio = gr.Audio(
@@ -71,14 +54,3 @@ class DevUI:
             inputs = None,
             outputs = [user_audio, user_textarea, tutor_audio, tutor_textarea]
         )  
-
-        audio_file_dropdown.change(
-            fn = lambda x: gr.update(value = os.path.join(self.root_dir, 'result', x)),
-            inputs = audio_file_dropdown,
-            outputs = user_audio
-        )
-        test_btn.click(
-            fn = self.__test_result_audio,
-            inputs = [audio_file_dropdown],
-            outputs = user_textarea
-        )
